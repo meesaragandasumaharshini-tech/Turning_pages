@@ -13,6 +13,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
 
+// PostgreSQL Connection
 const db = new pg.Client({
   connectionString: process.env.DATABASE_URL,
   ssl:
@@ -27,54 +28,71 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// --- Home page ---
+// ---------------- HOME PAGE ----------------
 app.get("/", async (req, res) => {
-  const { search, sort } = req.query;
+  try {
+    const result = await db.query(
+      "SELECT * FROM books ORDER BY id DESC LIMIT 5"
+    );
 
-  if (search || sort) {
-    const params = new URLSearchParams();
-    if (search) params.set("search", search);
-    if (sort) params.set("sort", sort);
-    return res.redirect(`/books?${params.toString()}`);
+    res.render("index", {
+      latestBooks: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+    res.send("Error loading homepage");
   }
-
-  const result = await db.query(
-    "SELECT * FROM books ORDER BY id DESC LIMIT 5"
-  );
-  res.render("index", { latestBooks: result.rows });
 });
 
-// --- All books page (with search + sort) ---
+// ---------------- ALL BOOKS ----------------
 app.get("/books", async (req, res) => {
-  const { search, sort } = req.query;
+  try {
+    const { search, sort } = req.query;
 
-  let query = "SELECT * FROM books";
-  const params = [];
-  const conditions = [];
+    let query = "SELECT * FROM books";
+    const values = [];
 
-  if (search) {
-    params.push(`%${search.toLowerCase()}%`);
-    conditions.push(
-      `(LOWER(title) LIKE $${params.length} OR LOWER(author) LIKE $${params.length} OR LOWER(genre) LIKE $${params.length})`
-    );
+    // Search
+    if (search && search.trim() !== "") {
+      values.push(`%${search.toLowerCase()}%`);
+
+      query += `
+        WHERE
+        LOWER(title) LIKE $1
+        OR LOWER(author) LIKE $1
+        OR LOWER(genre) LIKE $1
+      `;
+    }
+
+    // Sort
+    switch (sort) {
+      case "title":
+        query += " ORDER BY title ASC";
+        break;
+
+      case "rating":
+        query += " ORDER BY rating DESC";
+        break;
+
+      case "genre":
+        query += " ORDER BY genre ASC";
+        break;
+
+      default:
+        query += " ORDER BY id DESC";
+    }
+
+    const result = await db.query(query, values);
+
+    res.render("books", {
+      books: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+    res.send("Error loading books");
   }
-
-  if (conditions.length > 0) {
-    query += " WHERE " + conditions.join(" AND ");
-  }
-
-  const sortOptions = {
-    title: "title ASC",
-    genre: "genre ASC",
-    rating: "rating DESC",
-  };
-
-  query += sortOptions[sort] ? ` ORDER BY ${sortOptions[sort]}` : " ORDER BY id DESC";
-
-  const result = await db.query(query, params);
-  res.render("books", { books: result.rows });
 });
 
 app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });

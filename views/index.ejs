@@ -23,49 +23,53 @@
 
 </header>
 
-
+<!-- Search Section -->
 <section class="search-section">
 
-    <form action="/" method="GET" class="search-form">
+    <form action="/books" method="GET" class="search-form">
 
         <input
             type="text"
             name="search"
-            placeholder="Search here..."
+            placeholder="Search by title, author or genre..."
         >
 
-        <select name="sort" onchange="this.form.submit()">
-
+        <select name="sort">
             <option value="">Sort By</option>
             <option value="title">A-Z</option>
-            <option value="rating">Rating</option>
-
+            <option value="rating">Highest Rating</option>
+            <option value="genre">Genre</option>
         </select>
+
+        <button type="submit" class="btn">
+            Search
+        </button>
 
     </form>
 
 </section>
 
-
-
+<!-- Hero -->
 <section class="hero">
 
-    <h1>
-        Hi, I'm Suma Harshini
-    </h1>
+    <h1>Hi, I'm Suma Harshini 📚</h1>
 
     <p>
-        Reading has always been one of my favorite ways to relax, learn, and explore new worlds. This website is my little corner of the internet where I keep track of the books I've read and share my thoughts about each one.
+        Reading has always been one of my favorite ways to relax, learn, and explore new worlds.
+        This website is my little corner of the internet where I keep track of the books I've read
+        and share my thoughts about each one.
     </p>
 
     <p>
-        From magical adventures and timeless mythology to inspiring non-fiction and thought-provoking stories, every review here reflects my personal reading experience. Feel free to browse the collection, check out my ratings, and maybe find your next favorite book. Happy reading! ✨
+        From magical adventures and timeless mythology to inspiring non-fiction and
+        thought-provoking stories, every review here reflects my personal reading experience.
+        Feel free to browse the collection, check out my ratings, and maybe find your next
+        favorite book. Happy reading! ✨
     </p>
 
 </section>
 
-
-
+<!-- Latest Books -->
 <section class="latest">
 
     <h2>Latest Read Books</h2>
@@ -74,54 +78,76 @@
 
         <% latestBooks.forEach(book => { %>
 
-    <div class="book-card">
+            <div class="book-card">
 
-        <img src="https://covers.openlibrary.org/b/olid/<%= book.cover_id %>.jpg" alt="<%= book.title %>">
+                <img
+                    src="https://covers.openlibrary.org/b/olid/<%= book.cover_id %>.jpg"
+                    alt="<%= book.title %>"
+                >
 
-        <h3><%= book.title %></h3>
+                <h3><%= book.title %></h3>
 
-        <p><%= book.author %></p>
+                <p><%= book.author %></p>
 
-        <p>⭐ <%= book.rating %>/5</p>
+                <p>⭐ <%= book.rating %>/5</p>
 
-        <button type="button" onclick="toggleNotes(<%= book.id %>)">
-            View Notes
-        </button>
+                <button type="button" onclick="toggleNotes(<%= book.id %>)">
+                    View Notes
+                </button>
 
-        <div id="notes-<%= book.id %>" class="notes-box" style="display: none;">
-            <p><%= book.notes %></p>
-        </div>
+                <div
+                    id="notes-<%= book.id %>"
+                    class="notes-box"
+                    style="display:none;"
+                >
+                    <p><%= book.notes %></p>
+                </div>
 
-    </div>
+            </div>
 
-<% }) %>
+        <% }) %>
+
     </div>
 
 </section>
 
-
-
+<!-- All Books Button -->
 <section class="all-books-button">
 
     <a href="/books" class="btn">
-        All Books
+        View All Books
     </a>
 
 </section>
 
 <footer>
-    <p>Copyright © <%=  new Date().getFullYear() %> Turning Pages — Suma Harshini</p>
+
+    <p>
+        Copyright © <%= new Date().getFullYear() %> Turning Pages — Suma Harshini
+    </p>
+
     <div class="social-links">
-        <a href="https://www.linkedin.com/in/suma-harshini-meesaraganda-b527b7293/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        <a href="https://www.instagram.com/suma._m_/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.linkedin.com/in/suma-harshini-meesaraganda-b527b7293/" target="_blank">
+            LinkedIn
+        </a>
+
+        <a href="https://www.instagram.com/suma._m_/" target="_blank">
+            Instagram
+        </a>
     </div>
+
 </footer>
+
 <script>
-    function toggleNotes(id) {
-        const box = document.getElementById(`notes-${id}`);
-        const isHidden = box.style.display === "none";
-        box.style.display = isHidden ? "block" : "none";
+function toggleNotes(id) {
+    const box = document.getElementById("notes-" + id);
+
+    if (box.style.display === "none" || box.style.display === "") {
+        box.style.display = "block";
+    } else {
+        box.style.display = "none";
     }
+}
 </script>
 
 </body>

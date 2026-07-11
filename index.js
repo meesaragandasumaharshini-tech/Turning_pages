@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
 
-// PostgreSQL Connection
+// Database Connection
 const db = new pg.Client({
   connectionString: process.env.DATABASE_URL,
   ssl:
@@ -24,11 +24,13 @@ const db = new pg.Client({
 
 db.connect();
 
+// Middleware
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // ---------------- HOME PAGE ----------------
+
 app.get("/", async (req, res) => {
   try {
     const result = await db.query(
@@ -40,27 +42,28 @@ app.get("/", async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.send("Error loading homepage");
+    res.send("Error loading homepage.");
   }
 });
 
 // ---------------- ALL BOOKS ----------------
+
 app.get("/books", async (req, res) => {
   try {
-    const { search, sort } = req.query;
+    const { search = "", sort = "" } = req.query;
 
     let query = "SELECT * FROM books";
     const values = [];
 
     // Search
-    if (search && search.trim() !== "") {
+    if (search.trim() !== "") {
       values.push(`%${search.toLowerCase()}%`);
 
       query += `
-        WHERE
-        LOWER(title) LIKE $1
-        OR LOWER(author) LIKE $1
-        OR LOWER(genre) LIKE $1
+      WHERE
+      LOWER(title) LIKE $1
+      OR LOWER(author) LIKE $1
+      OR LOWER(genre) LIKE $1
       `;
     }
 
@@ -86,12 +89,16 @@ app.get("/books", async (req, res) => {
 
     res.render("books", {
       books: result.rows,
+      search,
+      sort,
     });
   } catch (err) {
     console.log(err);
-    res.send("Error loading books");
+    res.send("Error loading books.");
   }
 });
+
+// ---------------- START SERVER ----------------
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

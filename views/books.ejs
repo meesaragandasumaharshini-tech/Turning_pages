@@ -4,19 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turning Pages - All Books</title>
+
     <link rel="stylesheet" href="/styles/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
 <header>
+
     <div class="title">
         <h1>Turning Pages</h1>
     </div>
+
     <div>
         <a href="/" class="btn">Home</a>
     </div>
+
 </header>
+
+<!-- Search & Sort -->
+<section class="search-section">
+
+    <form action="/books" method="GET" class="search-form">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="Search by title, author or genre..."
+            value="<%= search || '' %>"
+        >
+
+        <select name="sort">
+
+            <option value="">Sort By</option>
+
+            <option value="title" <%= sort === "title" ? "selected" : "" %>>
+                A-Z
+            </option>
+
+            <option value="rating" <%= sort === "rating" ? "selected" : "" %>>
+                Highest Rating
+            </option>
+
+            <option value="genre" <%= sort === "genre" ? "selected" : "" %>>
+                Genre
+            </option>
+
+        </select>
+
+        <button type="submit" class="btn">
+            Search
+        </button>
+
+    </form>
+
+</section>
 
 <section class="all-books">
 
@@ -28,18 +71,31 @@
 
             <div class="book-card">
 
-                <img src="https://covers.openlibrary.org/b/olid/<%= book.cover_id %>.jpg" alt="<%= book.title %>">
+                <img
+                    src="https://covers.openlibrary.org/b/olid/<%= book.cover_id %>.jpg"
+                    alt="<%= book.title %>"
+                >
 
                 <h3><%= book.title %></h3>
-                <p><%= book.author %></p>
-                <p><em><%= book.genre %></em></p>
+
+                <p><strong>Author:</strong> <%= book.author %></p>
+
+                <p><strong>Genre:</strong> <%= book.genre %></p>
+
                 <p>⭐ <%= book.rating %>/5</p>
 
-                <button type="button" onclick="toggleNotes(<%= book.id %>)">
+                <button
+                    type="button"
+                    onclick="toggleNotes(<%= book.id %>)"
+                >
                     View Notes
                 </button>
 
-                <div id="notes-<%= book.id %>" class="notes-box" style="display: none;">
+                <div
+                    id="notes-<%= book.id %>"
+                    class="notes-box"
+                    style="display:none;"
+                >
                     <p><%= book.notes %></p>
                 </div>
 
@@ -50,20 +106,37 @@
     </div>
 
 </section>
+
 <footer>
-    <p>Copyright © <%=  new Date().getFullYear() %> Turning Pages — Suma Harshini</p>
+
+    <p>
+        Copyright © <%= new Date().getFullYear() %> Turning Pages — Suma Harshini
+    </p>
+
     <div class="social-links">
-        <a href="https://www.linkedin.com/in/suma-harshini-meesaraganda-b527b7293/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        <a href="https://www.instagram.com/suma._m_/" target="_blank" rel="noopener noreferrer">Instagram</a>
+
+        <a href="https://www.linkedin.com/in/suma-harshini-meesaraganda-b527b7293/" target="_blank" rel="noopener noreferrer">
+            LinkedIn
+        </a>
+
+        <a href="https://www.instagram.com/suma._m_/" target="_blank" rel="noopener noreferrer">
+            Instagram
+        </a>
+
     </div>
+
 </footer>
 
 <script>
-    function toggleNotes(id) {
-        const box = document.getElementById(`notes-${id}`);
-        const isHidden = box.style.display === "none";
-        box.style.display = isHidden ? "block" : "none";
+function toggleNotes(id) {
+    const box = document.getElementById("notes-" + id);
+
+    if (box.style.display === "none" || box.style.display === "") {
+        box.style.display = "block";
+    } else {
+        box.style.display = "none";
     }
+}
 </script>
 
 </body>

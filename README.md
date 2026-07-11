@@ -79,7 +79,7 @@ The landing page introduces the website, provides search and sorting options, an
 
 ### 📚 Books Page
 
-![Books Page](screenshots/books-page.png)
+![Books Page](screenshots/book-page.png)
 
 Displays the complete collection with book covers, author, genre, ratings, and personal notes.
 

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turning Pages - All Books</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <div class="title">
+        <h1>Turning Pages</h1>
+    </div>
+    <div>
+        <a href="/" class="btn">Home</a>
+    </div>
+</header>
+
+<section class="all-books">
+
+    <h2>All Books</h2>
+
+    <div class="book-grid">
+
+        <% books.forEach(book => { %>
+
+            <div class="book-card">
+
+                <img src="https://covers.openlibrary.org/b/olid/<%= book.cover_id %>.jpg" alt="<%= book.title %>">
+
+                <h3><%= book.title %></h3>
+                <p><%= book.author %></p>
+                <p><em><%= book.genre %></em></p>
+                <p>⭐ <%= book.rating %>/5</p>
+
+                <button type="button" onclick="toggleNotes(<%= book.id %>)">
+                    View Notes
+                </button>
+
+                <div id="notes-<%= book.id %>" class="notes-box" style="display: none;">
+                    <p><%= book.notes %></p>
+                </div>
+
+            </div>
+
+        <% }) %>
+
+    </div>
+
+</section>
+<footer>
+    <p>Copyright © <%=  new Date().getFullYear() %> Turning Pages — Suma Harshini</p>
+    <div class="social-links">
+        <a href="https://www.linkedin.com/in/suma-harshini-meesaraganda-b527b7293/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="https://www.instagram.com/suma._m_/" target="_blank" rel="noopener noreferrer">Instagram</a>
+    </div>
+</footer>
+
+<script>
+    function toggleNotes(id) {
+        const box = document.getElementById(`notes-${id}`);
+        const isHidden = box.style.display === "none";
+        box.style.display = isHidden ? "block" : "none";
+    }
+</script>
+
+</body>
+</html>
